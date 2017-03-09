@@ -1,3 +1,10 @@
 .Rproj.user
 .Rhistory
 .RData
+figures/
+install_r_guide_cache/
+install_r_guide_files/
+install_r_guide.pdf
+install_r_guide.Rmd
+qgdemo_problem_set.pdf
+qgdemo_problem_set.Rmd
