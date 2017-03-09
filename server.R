@@ -57,7 +57,7 @@ shinyServer(function(input, output) {
       Rep = paste("Pop", seq(data_set$r)),
       Final_Allele_Frequency = as.numeric(data_set$results[data_set$t,-1]),
       Fixation_Generation = apply(X = data_set$results[,-1], MARGIN = 2, FUN = function(gen) 
-        ifelse(any(gen == 0), which(gen == 0)[1], NA)), 
+        ifelse(any(gen == 0, gen == 1), which(gen == 0 | gen == 1)[1], NA)), 
       
       row.names = NULL
     )
