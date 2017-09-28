@@ -1,0 +1,11 @@
+name: qgdemo
+title: qgdemo
+account: neyhartj
+server: shinyapps.io
+appId: 162572
+bundleId: 740684
+url: https://neyhartj.shinyapps.io/qgdemo/
+when: 1489091556.08542
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .Rbuildignore|install_r_guide.pdf|install_r_guide.Rmd|qgdemo_problem_set.pdf|qgdemo_problem_set.Rmd|figures/step1.PNG|figures/step2.PNG|figures/step3.PNG|figures/step4_mac.PNG|figures/step4_pc.PNG|install_r_guide_files/figure-latex/unnamed-chunk-1-1.pdf|install_r_guide_files/figure-latex/unnamed-chunk-2-1.pdf|install_r_guide_files/figure-latex/unnamed-chunk-3-1.pdf|install_r_guide_files/figure-latex/unnamed-chunk-4-1.pdf|install_r_guide_files/figure-latex/unnamed-chunk-5-1.pdf

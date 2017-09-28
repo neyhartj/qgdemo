@@ -178,8 +178,8 @@ shinyServer(function(input, output) {
     
     # Plot
     plot(x = resp_out$results$gen, y = resp_out$results$G, type = "l", 
-         main = "Genotypic Value Over Generations", ylab = "Genotypic Value", 
-         xlab = "Generation", ylim = c(-1, 1), lwd = 2.5, col = "blue")
+         main = "Genotypic Value Over Generations", ylab = "Standardized Genotypic Value", 
+         xlab = "Generation", lwd = 2.5, col = "blue")
     
   })
   
@@ -207,7 +207,7 @@ shinyServer(function(input, output) {
     par(mfrow = c(1, 2))
     
     plot(x = gen, y = varG, type = "l", main = "Genetic Variance Over Generations", 
-         ylab = "Genetic Variance", xlab = "Generation", lwd = 2.5,
+         ylab = "Standardized Genetic Variance", xlab = "Generation", lwd = 2.5,
          col = "red")
     
     # Plot for allele frequencies
