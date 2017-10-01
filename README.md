@@ -23,7 +23,7 @@ Alternatively, the app may be accessed [online](https://neyhartj.shinyapps.io/qg
 
 ## Teaching Material
 
-I have written a lab worksheet to accompany the shiny app. You may access the PDF here and a copy of the intendend answer key here.
+I have written a lab worksheet to accompany the shiny app. You may access the PDF [here](https://github.com/neyhartj/qgdemo/raw/master/teaching_materials/qgdemo_problem_set.pdf) and a copy of the intendend answer key [here](https://github.com/neyhartj/qgdemo/raw/master/teaching_materials/qgdemo_problem_set_answers.pdf).
 
 ## Support
 
