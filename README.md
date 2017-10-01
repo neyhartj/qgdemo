@@ -6,7 +6,7 @@
 
 ## Description
 
-A shiny web-app to illustrate the introductory concepts in Quantitative Genetics
+A shiny web-app to illustrate the introductory concepts in quantitative genetics. This app was first designed for the HORT/AGRO 4401 course at the University of Minnesota, however it may be widely applicable.
 
 ## Setup
 
@@ -20,6 +20,10 @@ runGitHub("neyhartj/qgdemo")
 ```
 
 Alternatively, the app may be accessed [online](https://neyhartj.shinyapps.io/qgdemo/) through the ShinyApps server.
+
+## Teaching Material
+
+I have written a lab worksheet to accompany the shiny app. You may access the PDF here and a copy of the intendend answer key here.
 
 ## Support
 

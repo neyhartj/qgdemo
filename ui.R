@@ -81,7 +81,7 @@ shinyUI(
                           
                           # Input for the number of population replications
                           numericInput(inputId = "hwe_reps",
-                                       "Number of Replications",
+                                       "Number of Populations",
                                        value = 3,
                                        min = 1,
                                        max = 5 ),
