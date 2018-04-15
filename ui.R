@@ -99,12 +99,19 @@ shinyUI(
                         
                         # main panel
                         mainPanel(
-                        
-                          # Add graph
-                          plotOutput(outputId = "hwe_plot"),
                           
-                          # Add table
-                          tableOutput(outputId = "hwe_table")
+                          # Use a fluid row to center everything
+                          fluidRow(
+                            column(width = 12, align = "center", 
+                                   # Add graph
+                                   plotOutput(outputId = "hwe_plot"),
+                                   
+                                   # Table
+                                   tableOutput(outputId = "hwe_table")
+                                   
+                            )
+                            
+                          )
                           
                         )
                       ) # End the sidebar layout
@@ -123,7 +130,9 @@ shinyUI(
                         sidebarPanel(
                           
                           # Help text
-                          helpText("This simulation will assess the impact of allele frequency and coded genotypic values on the level of genetic variance at a single gene."),
+                          helpText("This simulation will assess the impact of allele 
+                                   frequency and coded genotypic values on the level of 
+                                   genetic variance at a single gene."),
                           
                           # Slider for p allele frequency
                           sliderInput(inputId = "var_p",
@@ -150,11 +159,18 @@ shinyUI(
                         
                         mainPanel(
                           
-                          # Add graph
-                          plotOutput(outputId = "var_plot"),
-                          
-                          # Table
-                          tableOutput(outputId = "var_table")
+                          # Use a fluid row to center everything
+                          fluidRow(
+                            column(width = 12, align = "center", 
+                              # Add graph
+                              plotOutput(outputId = "var_plot"),
+                            
+                              # Table
+                              tableOutput(outputId = "var_table")
+                              
+                            )
+                            
+                          )
                           
                         )
                         
@@ -183,12 +199,12 @@ shinyUI(
                                       min = 0,
                                       max = 1 ),
                           
-                          # Slider for number of genes
-                          sliderInput(inputId = "resp_L",
-                                      "Number of genes:",
-                                      value = 20, 
-                                      min = 1, 
-                                      max = 100 ),
+                          # # Slider for number of genes
+                          # sliderInput(inputId = "resp_L",
+                          #             "Number of genes:",
+                          #             value = 20, 
+                          #             min = 1, 
+                          #             max = 100 ),
                           
                           # Slider for heritability
                           sliderInput(inputId = "resp_h",

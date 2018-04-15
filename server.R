@@ -30,20 +30,23 @@ shinyServer(function(input, output) {
   # Plot the simulation
   output$hwe_plot <- renderPlot({
     
+    ## Color scheme from which to draw
+    col.scheme <- rainbow(n = 5)
+    
     data_set <- hwe_datasetInput()
     
     # Plot
+    par(xpd = TRUE, mar=c(9,4,4,2) + 0.1)
+    
     plot(NA, xlim = c(0,data_set$t), ylim = c(0,1), main = "Allele Frequencies Under Random Mating",
-         xlab = "Generation", ylab = "Allele Frequency (p)")
-    # Color scheme
-    col.scheme <- rainbow(n = data_set$r)
+         xlab = "Generation", ylab = expression("Allele Frequency "~(italic(p))))
     
     for (i in seq(data_set$r)) {
       lines(x = data_set$results$gen, y = data_set$results[,i+1], col = col.scheme[i])
     }
     
     # Add legend
-    legend("bottomleft", legend = paste("Pop", seq(data_set$r)), col = col.scheme, lwd = 2)
+    legend(x = 0, y = -0.3, legend = paste("Rep", seq(data_set$r)), col = col.scheme, lwd = 2)
 
   })
   
@@ -54,19 +57,28 @@ shinyServer(function(input, output) {
     data_set <- hwe_datasetInput()
     
     data.frame(
-      Rep = paste("Pop", seq(data_set$r)),
-      Final_Allele_Frequency = as.numeric(data_set$results[data_set$t,-1]),
-      Fixation_Generation = apply(X = data_set$results[,-1], MARGIN = 2, FUN = function(gen) 
+      Replication = paste("Rep", seq(data_set$r)),
+      `Final Allele Frequency` = as.numeric(data_set$results[data_set$t,-1]),
+      `Fixation Generation` = apply(X = data_set$results[,-1], MARGIN = 2, FUN = function(gen) 
         ifelse(any(gen == 0, gen == 1), which(gen == 0 | gen == 1)[1], NA)), 
       
-      row.names = NULL
+      check.names = FALSE, row.names = NULL
     )
     
-  })
+  }, align = "lcc", rownames = FALSE)
   
   
   ## Genetic variance tab
-  # Wait for input
+  # # Show theory if requested
+  # observeEvent(input$var_theory, {
+  #   insertUI(
+  #     selector =  '#placeholder',
+  #     ui = tags$div(
+  #       tags$p("testtext"),
+  #       id = "testid"
+  #     )
+  #   )
+  # })
   
   var_datasetInput <- reactive({
     
@@ -125,12 +137,14 @@ shinyServer(function(input, output) {
     
     # Output data.frame
     data.frame(
-      Source_of_Variance = c("Additive", "Dominance"),
+      `Source of Variance` = c("Additive", "Dominance"),
       Value = c(var_out$V_A, var_out$V_D),
-      Proportion_of_Genetic_Variance = var_out$V_G_prop
+      `Proportion of Genetic Variance` = var_out$V_G_prop,
+      check.names = FALSE,
+      row.names = NULL
     )
     
-  })
+  }, align = c("lcc"), rownames = FALSE)
   
   
   # Response to selection
@@ -139,7 +153,8 @@ shinyServer(function(input, output) {
     
     # Extract variables
     p <- input$resp_p
-    L <- input$resp_L
+    # L <- input$resp_L
+    L <- 25
     h <- input$resp_h
     i <- input$resp_i
     N <- input$resp_n
