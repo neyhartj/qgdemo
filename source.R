@@ -14,7 +14,7 @@ simpop <- function(p, N, t, f = c("0" = 1, "1" = 1, "2" = 1), reps = 1) {
   
   # Replicate by the number of reps
   results_out <- replicate(n = reps, expr = {
-                             
+    
     # Start an empty vector of allele frequencies
     p_vec <- vector("numeric", t)
     
@@ -38,7 +38,7 @@ simpop <- function(p, N, t, f = c("0" = 1, "1" = 1, "2" = 1), reps = 1) {
     
     # Sample the population with replacement using the fitness as the probability
     pop_i <- sample(x = pop_i, prob = prob_i, replace = T)
-  
+    
     
     # Advance the counter
     t_i <- t_i + 1
@@ -104,12 +104,15 @@ simpop <- function(p, N, t, f = c("0" = 1, "1" = 1, "2" = 1), reps = 1) {
 #' 
 simbreed <- function(p, N, t, h, L, i, a) {
   
+  # Determine the max genetic value
+  max_G <- sum(a)
+  
   # Initial generation number
   t_i <- 1
   
   # Initialize vectors to store information
   # QTL allele freqs
-  p_mat <- matrix(NA, nrow = t, ncol = L)
+  p_mat <- matrix(0, nrow = t, ncol = L)
   # Population geno value and genetic variance and phenotypes
   G_vec <- varG_vec <- P_vec <- vector("numeric", t)
   
@@ -122,28 +125,25 @@ simbreed <- function(p, N, t, h, L, i, a) {
   p_i <- apply(X = pop_i, MARGIN = 2, FUN = mean) / 2
   
   # Calculate the genotypic value
-  G_i <- (pop_i - 1) %*% a 
+  # Scale by the maximum genotype value posible
+  G_i <- ((pop_i - 1) %*% a ) / max_G
   varG <- var(G_i)
-  
-  # Scale the genotypic value
-  G_center <- mean(G_i)
-  G_scale <- sqrt(varG)
-  G_i_scale <- scale(G_i)
   
   # Calculate the non-genetic variance
   varR <- (varG / h) - varG
-    
+  
   # Add non-genetic effects
   epsilon <- rnorm(n = N, mean = 0, sd = sqrt(varR))
   
   # Calculate phenotypes
   P_i <- G_i + epsilon
   
-  # Store
+  
+  ## Store values
   # Mean genotypic value
-  G_vec[t_i] <- mean(G_i_scale)
+  G_vec[t_i] <- mean(G_i)
   # Variance
-  varG_vec[t_i] <- var(G_i_scale)
+  varG_vec[t_i] <- var(G_i)
   # Mean phenotype
   P_vec[t_i] <- mean(P_i)
   # Frequency
@@ -172,12 +172,9 @@ simbreed <- function(p, N, t, h, L, i, a) {
     p_mat[t_i, ] <- p_i
     
     # Calculate the genotypic value and standardize to the number of genes
-    G_i <- (pop_i - 1) %*% a 
-    
+    G_i <- ((pop_i - 1) %*% a) / max_G 
     varG <- var(G_i)
-    
-    # Scale the genotypic value
-    G_i_scale <- scale(G_i, center = G_center, scale = G_scale)
+
     
     # Add non-genetic effects
     epsilon <- rnorm(n = N, mean = 0, sd = sqrt(varR))
@@ -187,11 +184,12 @@ simbreed <- function(p, N, t, h, L, i, a) {
     
     # Store
     # Mean genotypic value
-    G_vec[t_i] <- mean(G_i_scale)
+    G_vec[t_i] <- mean(G_i)
     # Variance
-    varG_vec[t_i] <- var(G_i_scale)
+    varG_vec[t_i] <- var(G_i)
     # Mean phenotype
     P_vec[t_i] <- mean(P_i)
+    
     
     # Make selections
     sel_ind <- head(x = order(P_i, decreasing = T), n = ceiling(i * N))
@@ -215,12 +213,11 @@ simbreed <- function(p, N, t, h, L, i, a) {
   )
   
 } # Close the function
-  
-  
 
 
 
 
 
 
-    
+
+

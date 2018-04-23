@@ -5,6 +5,7 @@ library(shiny)
 # Source the code
 source("source.R")
 
+
 shinyServer(function(input, output) {
   
   # Run the simulation using inputs
@@ -149,7 +150,9 @@ shinyServer(function(input, output) {
   
   # Response to selection
   # Wait for input
-  resp_datasetInput <- eventReactive(eventExpr = input$resp_action, valueExpr = {
+  # observeEvent(eventExpr = input$resp_action, handlerExpr = {
+  
+  resp_datasetInput <- eventReactive(eventExpr = input$resp_action, ignoreInit = TRUE, valueExpr = {
     
     # Extract variables
     p <- input$resp_p
@@ -158,7 +161,8 @@ shinyServer(function(input, output) {
     h <- input$resp_h
     i <- input$resp_i
     N <- input$resp_n
-    t <- input$resp_t
+    # t <- input$resp_t
+    t <- 25
     
     # Determine the additive effects of QTL
     a <- ((L - 1) / (L + 1)) ^ seq(L)
@@ -166,12 +170,9 @@ shinyServer(function(input, output) {
     # If a is 0 (L = 1), set to 1
     a <- ifelse(a == 0, 1, a)
     
-    # Determine the max genetic value
-    max_G <- sum(a)
-    
     # Launch simulation
     # Return a list a results
-    list(
+    data_list <- list(
       p = p,
       L = L,
       h = h,
@@ -179,64 +180,147 @@ shinyServer(function(input, output) {
       t = t,
       N = N,
       a = a,
-      max_G = max_G,
       results = simbreed(p = p, N = N, t = t, h = h, L = L, i = i, a = a)
     )
     
+    # Does 'resp_sim_results' exist? If so, append to it
+    if (!exists("resp_sim_results")) {
+      resp_sim_results <<- list(data_list)
+      
+    } else {
+      resp_sim_results <<- list(tail(resp_sim_results, 1)[[1]], data_list)
+
+    }
+    
+    # Output the data    
+    resp_sim_results
+
   })
+  
   
   # Plot
   output$resp_plot <- renderPlot({
-    
-    # Get the data
-    resp_out <- resp_datasetInput()
-    
-    # Plot
-    plot(x = resp_out$results$gen, y = resp_out$results$G, type = "l", 
-         main = "Genotypic Value Over Generations", ylab = "Standardized Genotypic Value", 
-         xlab = "Generation", lwd = 2.5, col = "blue")
-    
-  })
-  
-  # Plot other
-  output$resp_supplot <- renderPlot({
-    
-    # Get the data
-    resp_out <- resp_datasetInput()
-    
+
+    resp_sim_results_plot <- resp_datasetInput()
+
+    # Get the first set of data, if present
+    if (length(resp_sim_results_plot) == 1) {
+      # Get the data - the newest run is the last in the list
+      resp_out <- resp_sim_results_plot[[1]]
+
+    } else {
+      resp_out <- resp_sim_results_plot[[2]]
+      resp_out_old <- resp_sim_results_plot[[1]]
+
+    }
+
     # Generations
     gen <- resp_out$results$gen
-    
-    # Genetic variance over generations
-    varG <- resp_out$results$varG
+
     # matrix of allele frequencies
     freq <- resp_out$results[,startsWith(x = colnames(resp_out$results), prefix = "p"), drop = FALSE]
     # Vector of allele effects
     a <- resp_out$a
-    
+
     # bins of allele effects
     a_bin <- .bincode(x = a, breaks = seq(0, 1, by = 0.1))
-    
-    
-    # 2 plots
-    par(mfrow = c(1, 2))
-    
-    plot(x = gen, y = varG, type = "l", main = "Genetic Variance Over Generations", 
-         ylab = "Standardized Genetic Variance", xlab = "Generation", lwd = 2.5,
-         col = "red")
-    
+
+
+
+    # 2 x 2 plots
+    par(mfrow = c(2, 2))
+
+
+    # Plot
+    plot(NA, type = "l", main = "Genotypic Value", ylab = "Standardized Genotypic Value",
+         xlab = "Generation", ylim = c(-1, 1), xlim = c(1, length(gen)))
+
+    # If resp_out_old is present, add the previous results
+    if (exists("resp_out_old")) {
+      lines(x = resp_out_old$results$gen, y = resp_out_old$results$G, lwd = 2.5,
+            col = "grey75")
+    }
+
+    ## Add lines
+    lines(x = resp_out$results$gen, y = resp_out$results$G, lwd = 2.5, col = "blue")
+
+
+
+
+    # Plot
+    plot(NA, type = "l", main = "Genetic Variance", ylab = "Standardized Genetic Variance",
+         xlab = "Generation", ylim = c(0, 0.05), xlim = c(1, length(gen)))
+
+    # If resp_out_old is present, add the previous results
+    if (exists("resp_out_old")) {
+      lines(x = resp_out_old$results$gen, y = resp_out_old$results$varG, lwd = 2.5,
+            col = "grey75")
+    }
+
+    ## Add lines
+    lines(x = resp_out$results$gen, y = resp_out$results$varG, lwd = 2.5, col = "red")
+
+
+
     # Plot for allele frequencies
-    plot(NA, type = "l", main = "Allele Frequencies Over Generations",
+    plot(NA, type = "l", main = "Allele Frequencies",
          ylab = "Frequency", xlab = "Generation", ylim = c(0, 1), xlim = c(1, length(gen)))
-    
+
     # Iterate over allele frequencies
     for (l in seq(resp_out$L)) {
-      
+
       lines(x = gen, y = freq[,l], lwd = a_bin[l] / 2)
-      
+
     }
     
+    # # Add a legend plot
+    # plot(NA, ylim = c(-1, 1), xlim = c(-1, 1))
+    # legend(x = 0, y = 0, legend = c("Current Simulation", "Previous Simulation"),
+    #        col = "blue", "grey75", lwd = c(1,1))
+
   })
+  
+  
+  # # Plot other
+  # output$resp_supplot <- renderPlot({
+  #   
+  #   # Get the data
+  #   resp_out <- resp_datasetInput()
+  #   
+  #   # Generations
+  #   gen <- resp_out$results$gen
+  #   
+  #   # Genetic variance over generations
+  #   varG <- resp_out$results$varG
+  #   # matrix of allele frequencies
+  #   freq <- resp_out$results[,startsWith(x = colnames(resp_out$results), prefix = "p"), drop = FALSE]
+  #   # Vector of allele effects
+  #   a <- resp_out$a
+  #   
+  #   # bins of allele effects
+  #   a_bin <- .bincode(x = a, breaks = seq(0, 1, by = 0.1))
+  #   
+  #   
+  #   # 2 plots
+  #   par(mfrow = c(1, 2))
+  #   
+  #   plot(x = gen, y = varG, type = "l", main = "Genetic Variance Over Generations", 
+  #        ylab = "Standardized Genetic Variance", xlab = "Generation", lwd = 2.5,
+  #        col = "red", ylim = c(0, 0.05), xlim = c(1, length(gen)))
+  #   
+  #   # Plot for allele frequencies
+  #   plot(NA, type = "l", main = "Allele Frequencies Over Generations",
+  #        ylab = "Frequency", xlab = "Generation", ylim = c(0, 1), xlim = c(1, length(gen)))
+  #   
+  #   # Iterate over allele frequencies
+  #   for (l in seq(resp_out$L)) {
+  #     
+  #     lines(x = gen, y = freq[,l], lwd = a_bin[l] / 2)
+  #     
+  #   }
+  #   
+  # })
+  
   
   
 }) # Close the server

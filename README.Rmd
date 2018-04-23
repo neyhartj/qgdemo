@@ -1,35 +1,41 @@
+---
+output: github_document
+---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-qgdemo
-======
+<!-- README.md is generated from README.Rmd. Please edit that file -->  
 
-Author
-------
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.path = "README-", 
+                      eval = FALSE)
+```
+
+# qgdemo
+
+## Author
 
 [Jeff Neyhart](neyhartj.github.io)
 
-Description
------------
+## Description
 
 A shiny web-app to illustrate the introductory concepts in quantitative genetics. This app was first designed for the HORT/AGRO 4401 course at the University of Minnesota, however it may be widely applicable.
 
-Setup
------
+## Setup
 
 Use the `shiny` R package to run the app:
 
-    library(shiny)
+```
+library(shiny)
 
-    runGitHub("neyhartj/qgdemo")
+runGitHub("neyhartj/qgdemo")
+
+```
 
 Alternatively, the app may be accessed [online](https://neyhartj.shinyapps.io/qgdemo/) through the ShinyApps server.
 
-Teaching Material
------------------
+## Teaching Material
 
 I have written a lab worksheet to accompany the shiny app. You may access the PDF [here](https://github.com/neyhartj/qgdemo/raw/master/teaching_materials/qgdemo_problem_set.pdf) and a copy of the intendend answer key [here](https://github.com/neyhartj/qgdemo/raw/master/teaching_materials/qgdemo_problem_set_answers.pdf).
 
-Support
--------
+## Support
 
 Please [open an issue](https://github.com/neyhartj/qgdemo/issues/new) for support or to comment.

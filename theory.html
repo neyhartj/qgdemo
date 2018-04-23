@@ -1,0 +1,30 @@
+<h1>Theory</h1>
+
+<p>Below are explanations of the assumptions and theory that underlie the simulations in each of the tabs.</p>
+
+<h3>Randomly mating populations</h3>
+
+<p>This simulation tracks the frequency of the \(A\) allele over generations in one or more populations of randomly mating, diploid individuals. The simulation initiates with a starting allele frequency of \(p_A\). Since the individuals are randomly mating, the number of \(A\) alleles in each individual can be interpreted as \(N\) (number of individuals) independent &ldquo;experiments&rdquo; where a &ldquo;success&rdquo; is possessing an \(A\) allele. Realizations of the number of \(A\) alleles in each individual are drawn from a bionomial distribution of size \(N\) and success probability \(p_A\), or \(x_{0i} \sim \textrm{binom}(N, p_{A0})\), where \(g = 0\) indicates the generation number (\(0\) for the base generation) and \(i\) indicates the individual number.</p>
+
+<p>The mean of this realization is the average number of \(A\) alleles in an individual. This estimate, divided by the number of alleles in an individual (2 for a diploid) gives the estimated frequency of \(A\) alleles, or \(\hat{p}_{A0} = \frac{1}{2} \sum{x_{0i}}\).</p>
+
+<p>We assume that each individual is equally likely to pass alleles on to the next generation. Therefore, the realization of the number of \(A\) alleles in the next generation is drawn from a similar binomial distribution, except the success probability is changed to the estimated allele frequency (\(\hat{p}_A\)) in the previous generation, or \(x_{gi} \sim \textrm{binom}(N, \hat{p}_A)\). This process is repeated for \(g = 1, 2, &hellip;, G\) generations.</p>
+
+<p>The whole simulation can be re-written as follows:</p>
+
+<ol>
+<li>Set the starting frequency of \(A\) alleles, or \(p_{A0}\)</li>
+<li>Sample realizations of the number of \(A\) alleles, or \(x_{0i} \sim \textrm{binom}(N, p_{A0})\)</li>
+<li>Estimate the frequency of \(A\) alleles from the sample, or \(\hat{p}_{A0} = \frac{1}{2} \sum{x_{0i}}\)</li>
+<li>For \(g = 1, 2, &hellip;, G\) generations:
+
+<ul>
+<li>Sample realizations of the number of \(A\) alleles using the estimated allele frequency in the previous generation, or \(x_{gi} \sim \textrm{binom}(N, \hat{p}_{A(g-1)})\)</li>
+<li>Estimate the frequency of \(A\) alleles from the sample, or \(\hat{p}_{Ag} = \frac{1}{2} \sum{x_{gi}}\)</li>
+</ul></li>
+</ol>
+
+<h3>Genetic variance</h3>
+
+<h3>Response to selection</h3>
+

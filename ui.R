@@ -1,41 +1,43 @@
 # ui.R
 
 library(shiny)
+library(knitr)
 
 # To label inputs, the section title is give first, followed by the section parameter
 # i.e. hwe_p
 
 # Initialize the layout with a navbar
-shinyUI(
+shinyUI(fluidPage(
   
   navbarPage(title = "Quantitative Genetics Demo",
              
-             # First tab
+             #### First tab ####
              tabPanel(title = "Introduction",
                       
                       titlePanel("Introduction"),
                             
                             mainPanel(
                               
-                              helpText("The complexity of quantitative genetics often requires intensive computation tools for analysis. Researchers can also use computers to run simulations of breeding programs. These can be especially informative for hypothesis testing or for decision-making in breeding. We will use simulations to better-understand the concepts of population genetics, genetic variance, and response to selection."),
+                              p("The complexity of quantitative genetics often requires intensive computation tools for analysis. Researchers can also use computers to run simulations of breeding programs. These can be especially informative for hypothesis testing or for decision-making in breeding. We will use simulations to better-understand the concepts of population genetics, genetic variance, and response to selection."),
                               
                               br(),
                               
-                              h2("Learning Objectives"),
+                              h3("Learning Objectives"),
                               
-                              helpText("After completing this demo, you should be able to..."),
-                              h5("  Understand how allele frequencies change over time in randomly-mating populations"),
-                              h5("  Define genetic drift and understand the impact of genetic drift on breeding populations."),
-                              h5("  Define the relationship between population size and the likelihood that alleles reach fixation"),
-                              h5("  Understand the relationship between allele frequency and coded genotypic values on the levels of additive variance and dominance variance."),
-                              h5("  Understand the relationship between response to selection, genetic variance, and allele frequencies."),
-                              h5("  Define the impact of heritability and selection intensity on response to selection."),
+                              p("After completing this demo, you should be able to:"),
+                              
+                              tags$li("  Understand how allele frequencies change over time in randomly-mating populations"),
+                              tags$li("  Define genetic drift and understand the impact of genetic drift on breeding populations."),
+                              tags$li("  Define the relationship between population size and the likelihood that alleles reach fixation"),
+                              tags$li("  Understand the relationship between allele frequency and coded genotypic values on the levels of additive variance and dominance variance."),
+                              tags$li("  Understand the relationship between response to selection, genetic variance, and allele frequencies."),
+                              tags$li("  Define the impact of heritability and selection intensity on response to selection."),
                               
                               br(),
                               
-                              h2("Navigation"),
+                              h3("Navigation"),
                               
-                              helpText("This demo is very much 'point and click.' Click on the different tabs above to change the topic. Use the sliders to adjust the values of different parameters. Click the 'Simulate' button to run the simulations for topics 1 and 3."),
+                              p("This demo is very much 'point and click.' Click on the different tabs above to change the topic. Use the sliders to adjust the values of different parameters. Click the 'Simulate' button to run the simulations for topics 1 and 3."),
                               
                               br(),
                               
@@ -44,10 +46,13 @@ shinyUI(
                             )
                    ),
              
-             # Second tab
-             tabPanel("Randomly-Mating Populations",
+             
+             
+             
+             #### Second tab ####
+             tabPanel("Randomly Mating Populations",
                       
-                      titlePanel("Randomly-Mating Populations"),
+                      titlePanel("Randomly Mating Populations"),
                             
                       # Create a sidebar panel
                       sidebarLayout(
@@ -119,7 +124,9 @@ shinyUI(
               # End the tab        
              ),
              
-             # Third tab
+             
+             
+             #### Third tab ####
              tabPanel("Genetic Variance",
                       
                       titlePanel("Genetic Variance"),
@@ -179,7 +186,9 @@ shinyUI(
               # Close the tab        
              ),
              
-             # Third tab
+             
+             
+             #### Fourth tab ####
              tabPanel("Response to Selection",
                       
                       titlePanel("Response to Selection"),
@@ -213,7 +222,7 @@ shinyUI(
                                       min = 0, 
                                       max = 1 ),
                           
-                          helpText("The selection intensity here is defined as the proportion of individuals selected from one generation to create the population in the next generation. A low proportion of selected individuals (e.g. 0.1) is a high selection intensity, and vice versa."),
+                          helpText("The selection intensity is defined as the proportion of individuals selected from one generation to create the next generation. A low proportion of selected individuals is a high selection intensity, and vice versa."),
                           
                           # Slider for selection intensity
                           sliderInput(inputId = "resp_i",
@@ -229,12 +238,12 @@ shinyUI(
                                       min = 2,
                                       max = 2000 ),
                           
-                          # Slider for number of generations
-                          sliderInput(inputId = "resp_t",
-                                      "Number of Breeding Generations:",
-                                      value = 10, 
-                                      min = 1, 
-                                      max = 50 ),
+                          # # Slider for number of generations
+                          # sliderInput(inputId = "resp_t",
+                          #             "Number of Breeding Generations:",
+                          #             value = 10, 
+                          #             min = 1, 
+                          #             max = 50 ),
                           
                           # Break
                           br(),
@@ -252,23 +261,35 @@ shinyUI(
                         mainPanel(
                           
                           # Add graph
-                          plotOutput(outputId = "resp_plot"),
+                          plotOutput(outputId = "resp_plot", height = 700)
                           
-                          # Add another graph
-                          plotOutput(outputId = "resp_supplot"),
-                          
-                          # Table
-                          tableOutput(outputId = "resp_table")
+                          # Depricated
+                          # # Add another graph
+                          # plotOutput(outputId = "resp_supplot"),
+                          # 
+                          # # Table
+                          # tableOutput(outputId = "resp_table")
                           
                         )
                         
                       )
+             ),
+             
+             
+             
+             
+             #### Fifth tab ####
+             tabPanel(title = "Theory",
+                        
+                        withMathJax(
+                          includeHTML(knit2html("theory.Rmd", fragment.only = TRUE))
+                        )
              )
              
    # End the navigation bar
   )
   
-) # End the UI
+)) # End the UI
                                       
                           
                           
