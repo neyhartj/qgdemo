@@ -1,3 +1,8 @@
+---
+bibliography: C:/Users/Jeff/Documents/Literature/library.bib
+---
+
+
 # Theory
 
 
@@ -11,7 +16,7 @@ The mean of this realization is the average number of $A$ alleles in an individu
 
 We assume that each individual is equally likely to pass alleles on to the next generation. Therefore, the realization of the number of $A$ alleles in the next generation is drawn from a similar binomial distribution, except the success probability is changed to the estimated allele frequency ($\hat{p}_A$) in the previous generation, or $x_{gi} \sim \textrm{binom}(N, \hat{p}_A)$. This process is repeated for $g = 1, 2, ..., G$ generations.
 
-The whole simulation can be re-written as follows:
+The whole simulation can be summarized as follows:
 
 1. Set the starting frequency of $A$ alleles, or $p_{A0}$
 2. Sample realizations of the number of $A$ alleles, or $x_{0i} \sim \textrm{binom}(N, p_{A0})$
@@ -23,7 +28,22 @@ The whole simulation can be re-written as follows:
 
 ### Genetic variance
 
+The genetic variance simulation relies on the theoretical equation for the additive genetic variance and dominance genetic variance at a single gene [@Bernardo2010]:
+
+$V_A = 2pq[a+d(q-p)]^2 \\ V_D = 4p^2q^2d^2$
+
+Since we only consider a single gene, epistatic variance (i.e. $V_I$) is absent. Therefore, the total genetic variance at the single gene is the sum of the additive variance and the dominance variance, or $V_G = V_A + V_D$.
+
+By using these equations, we assume that:
+    + The population is in Hardy-Weinberg equalibrium
+    + There are only two alleles at the gene
+    
+
+
 
 ### Response to selection
+
+
+### References
 
 

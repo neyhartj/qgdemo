@@ -1,7 +1,6 @@
 # ui.R
 
 library(shiny)
-library(knitr)
 
 # To label inputs, the section title is give first, followed by the section parameter
 # i.e. hwe_p
@@ -146,7 +145,8 @@ shinyUI(fluidPage(
                                       "Starting Allele Frequency (p):",
                                       value = 0.5,
                                       min = 0,
-                                      max = 1 ),
+                                      max = 1, 
+                                      step = 0.01),
                           
                           # Slider for additive effect
                           sliderInput(inputId = "var_a",
@@ -168,14 +168,19 @@ shinyUI(fluidPage(
                           
                           # Use a fluid row to center everything
                           fluidRow(
-                            column(width = 12, align = "center", 
-                              # Add graph
-                              plotOutput(outputId = "var_plot"),
+                            column(width = 6, align = "center", 
+                                   
+                                   # Add graph
+                                   plotOutput(outputId = "var_prop"),
                             
-                              # Table
-                              tableOutput(outputId = "var_table")
-                              
-                            )
+                                   # Table
+                                   tableOutput(outputId = "var_table")),
+                            
+                            # Second column
+                            column(width = 6, align = "center",
+                                   
+                                   # Add a graph
+                                   plotOutput(outputId = "var_plot"))
                             
                           )
                           
@@ -282,7 +287,7 @@ shinyUI(fluidPage(
              tabPanel(title = "Theory",
                         
                         withMathJax(
-                          includeHTML(knit2html("theory.Rmd", fragment.only = TRUE))
+                          includeHTML("theory.html")
                         )
              )
              

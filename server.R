@@ -84,25 +84,37 @@ shinyServer(function(input, output) {
   var_datasetInput <- reactive({
     
     # Extract the variables
-    p <- input$var_p
+    ## Generate a sequence of allele frequencies
+    ## Round in order to avoid weird bug in 'seq'
+    p <- round(x = seq(0, 1, by = 0.01), digits = 2)
+    q <- 1 - p
+    
+    p_i <- input$var_p
     a <- input$var_a
     d <- input$var_d
-    q <- 1 - p
+    q_i <- 1 - p_i
     
     # Calculate additive variance
     V_A <- 2 * p * q * ( ( a + d * (q - p) )^2 )
     V_D <- 4 * p^2 * q^2 * d^2
     
+    ## Calculate genetic variance at the specific gene frequency
+    V_A_i <- V_A[p == p_i]
+    V_D_i <- V_D[p == p_i]
+    
     # Total V_G is V_A + V_D
-    V_G_tot <- V_A + V_D
+    V_G_tot <- V_A_i + V_D_i
     V_G_per <- 1
     
     # Calculate proportions of V_A and V_D
-    V_G_prop <- matrix(data = c(V_A, V_D), ncol = 1) / V_G_tot
+    V_G_prop <- matrix(data = c(V_A_i, V_D_i), ncol = 1) / V_G_tot
     
     list(
+      p = p,
       V_A = V_A,
       V_D = V_D,
+      V_A_i = V_A_i,
+      V_D_i = V_D_i,
       V_G_per = V_G_per,
       V_G_prop = V_G_prop
     )
@@ -110,7 +122,7 @@ shinyServer(function(input, output) {
   })
   
   # Plot
-  output$var_plot <- renderPlot({
+  output$var_prop <- renderPlot({
     
     # Get the data
     var_out <- var_datasetInput()
@@ -130,6 +142,30 @@ shinyServer(function(input, output) {
     
   })
   
+  ## Add another plot of V_A and V_D over allele frequencies
+  
+  output$var_plot <- renderPlot({
+    
+    # Get the data
+    var_out <- var_datasetInput()
+    
+    ## Colors of the genetic variance
+    colors <- rainbow(2)
+    
+    # Plot
+    ## Plot the total variance first
+    plot(x = var_out$p, y = var_out$V_A + var_out$V_D, type = "l", lwd = 2, 
+         ylab = "Variance", xlab = expression("Allele Frequency"~(italic(p))))
+    # Add lines for the dominance variance and additive variance
+    lines(x = var_out$p, y = var_out$V_D, type = "l", col = colors[2], lwd = 2)
+    lines(x = var_out$p, y = var_out$V_A, type = "l", col = colors[1], lwd = 2)
+    
+    ## Add a legend
+    legend(x = "topright", legend = c(expression(bold(V[A])), expression(bold(V[D])), expression(bold(V[G]))),
+           col = c(rev(colors), "black"), lwd = 2)
+    
+  })
+  
   # Table
   output$var_table <- renderTable({
     
@@ -139,7 +175,7 @@ shinyServer(function(input, output) {
     # Output data.frame
     data.frame(
       `Source of Variance` = c("Additive", "Dominance"),
-      Value = c(var_out$V_A, var_out$V_D),
+      Value = c(var_out$V_A_i, var_out$V_D_i),
       `Proportion of Genetic Variance` = var_out$V_G_prop,
       check.names = FALSE,
       row.names = NULL
